@@ -20,16 +20,6 @@
         writeSettings();
       }
     },
-    'Speed threshold': {
-      value: settings.speedThreshold || 20,
-      min: 10,
-      max: 80,
-      step: 1,
-      onchange: v => {
-        settings.speedThreshold = v;
-        writeSettings();
-      }
-    }
   };
 
   if (global.WIDGETS && WIDGETS["recorder"]) {
@@ -48,6 +38,17 @@
       }
     };
   }
+
+  appMenu['Speed threshold'] = {
+    value: settings.speedThreshold || 20,
+    min: 10,
+    max: 80,
+    step: 1,
+    onchange: v => {
+      settings.speedThreshold = v;
+      writeSettings();
+    }
+  };
 
   const altdiffMenu = {
     '': { 'title': 'Altitude adjustment' },
