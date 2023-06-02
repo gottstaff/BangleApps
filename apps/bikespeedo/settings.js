@@ -37,7 +37,7 @@
         writeSettings();
       }
     };
-	appMenu['Speed threshold'] = {
+    appMenu['Speed threshold'] = {
     value: settings.speedThreshold || 20,
     min: 10,
     max: 80,
