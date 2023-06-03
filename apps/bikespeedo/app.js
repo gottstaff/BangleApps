@@ -349,6 +349,8 @@ function drawSats(sats) {
   }
 }
 
+let speedThreshold = settings.speedThreshold || 20;
+
 function onGPS(fix) {
 
  if ( emulator ) {
@@ -406,6 +408,10 @@ function onGPS(fix) {
     if (isNaN(sp)) sp = '---';
 
     if (parseFloat(sp) > parseFloat(max.spd) && max.n > 15 ) max.spd = parseFloat(sp);
+	
+	if (sp > speedThreshold) {
+      Bangle.buzz();
+    }
 
     // Altitude
     al = lf.alt;
@@ -472,8 +478,6 @@ function updateClock() {
 
 // Read settings.
 let cfg = require('Storage').readJSON('bikespeedo.json',1)||{};
-let speedThreshold = settings.speedThreshold || 20;
-let blinkIntervalId = null;
 
 cfg.spd = !cfg.localeUnits;  // Multiplier for speed unit conversions. 0 = use the locale values for speed
 cfg.spd_unit = 'km/h';  // Displayed speed unit
@@ -575,31 +579,4 @@ if (cfg.record && WIDGETS["recorder"]) {
     E.on('kill', () => WIDGETS["recorder"].setRecording(false));
 } else {
   start();
-}
-
-if (currentSpeed > speedThreshold) {
-  Bangle.buzz();  // trigger vibration
-
-  // start blinking
-  if (blinkIntervalId === null) {
-    blinkIntervalId = setInterval(function() {
-      g.clear();
-      g.setColor(1,0,0); // set color to red
-      g.fillRect(0, 0, g.getWidth(), g.getHeight()); // fill screen
-      g.flip(); // update screen
-
-      setTimeout(function() {
-        g.clear();
-        g.setColor(1,1,1); // set color back to white
-        g.fillRect(0, 0, g.getWidth(), g.getHeight()); // fill screen
-        g.flip(); // update screen
-      }, 500);
-    }, 1000);
-  }
-} else {
-  // stop blinking
-  if (blinkIntervalId !== null) {
-    clearInterval(blinkIntervalId);
-    blinkIntervalId = null;
-  }
 }
